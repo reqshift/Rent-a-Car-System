@@ -1,0 +1,50 @@
+[
+  {
+    "type" : "CAR",
+    "id" : 1,
+    "plate" : "06EHB292",
+    "brand" : "Lada",
+    "model" : "Vega",
+    "dailyRentalPrice" : 400.0,
+    "isRented" : true,
+    "currentKm" : 100000.0,
+    "carClass" : "Sedan"
+  },
+
+  {
+    "type" : "CAR",
+    "id" : 2,
+    "plate" : "06ABC123",
+    "brand" : "Ford",
+    "model" : "Focus",
+    "daiLyRentalPrice" : 2776.0,
+    "isRented" : false,
+    "currentKm" : 250000.0,
+    "carClass" : "Hatchback"
+  },
+
+  {
+    "type" : "MOTORCYCLE",
+    "id" : 3,
+    "plate" : "06DEF321",
+    "brand" : "Yamaha",
+    "model" : "R25",
+    "daiLyRentalPrice" : 3000.0,
+    "isRented" : true,
+    "currentKm" : 40000.0,
+    "engineCc" : 600
+  },
+
+  {
+    "type" : "MOTORCYCLE",
+    "id" : 4,
+    "plate" : "06GHJ213",
+    "brand" : "Honda",
+    "model" : "PCX",
+    "daiLyRentalPrice" : 1150.0,
+    "isRented" : false,
+    "currentKm" : 12000.0,
+    "engineCc" : 125
+
+  }
+]
