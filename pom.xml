@@ -14,4 +14,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+ //JSON okuma ve yazma işlemleri için "Gson" kütüphanesi pom.xml dosyasına, uygulaması daha kolay ve hafif ölçekli olduğu için dependency olarak eklendi.
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+    </dependencies>
+
 </project>
