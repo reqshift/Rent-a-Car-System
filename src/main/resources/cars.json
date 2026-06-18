@@ -1,50 +1,51 @@
 [
   {
     "type" : "CAR",
-    "id" : 1,
     "plate" : "06EHB292",
     "brand" : "Lada",
     "model" : "Vega",
     "dailyRentalPrice" : 400.0,
-    "isRented" : true,
     "currentKm" : 100000.0,
-    "carClass" : "Sedan"
+    "vehicleClass" : "Sedan",
+    "gearType" : "manual",
+    "status" : "RENTED"
   },
 
   {
     "type" : "CAR",
-    "id" : 2,
     "plate" : "06ABC123",
     "brand" : "Ford",
     "model" : "Focus",
-    "daiLyRentalPrice" : 2776.0,
-    "isRented" : false,
+    "dailyRentalPrice" : 2776.0,
     "currentKm" : 250000.0,
-    "carClass" : "Hatchback"
+    "vehicleClass" : "Hatchback",
+    "gearType" : "automatic",
+    "status" : "AVAILABLE"
+
   },
 
   {
     "type" : "MOTORCYCLE",
-    "id" : 3,
     "plate" : "06DEF321",
     "brand" : "Yamaha",
     "model" : "R25",
-    "daiLyRentalPrice" : 3000.0,
-    "isRented" : true,
+    "dailyRentalPrice" : 3000.0,
     "currentKm" : 40000.0,
-    "engineCc" : 600
+    "vehicleClass" : "Sportbike",
+    "engineCc" : 600,
+    "status" : "RENTED"
+
   },
 
   {
     "type" : "MOTORCYCLE",
-    "id" : 4,
     "plate" : "06GHJ213",
     "brand" : "Honda",
     "model" : "PCX",
-    "daiLyRentalPrice" : 1150.0,
-    "isRented" : false,
+    "dailyRentalPrice" : 1150.0,
     "currentKm" : 12000.0,
-    "engineCc" : 125
-
+    "vehicleClass" : "Scooter",
+    "engineCc" : 125,
+    "status" : "AVAILABLE"
   }
 ]
