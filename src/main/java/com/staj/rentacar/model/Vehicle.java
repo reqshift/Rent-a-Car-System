@@ -1,16 +1,16 @@
-package model;
-import enums.VehicleStatus;
-import enums.VehicleType;
+package com.staj.rentacar.model;
+import com.staj.rentacar.enums.VehicleStatus;
+import com.staj.rentacar.enums.VehicleType;
 
 //Vehicle soyut bir sınıftır (abstract) çünkü ondan türetilme yapılamaz, onu miras alanlardan (Car, motorcycle) yeni obje oluşturulur.
 public abstract class Vehicle {
-    private VehicleType type;
-    private String plate;
-    private String brand;
-    private String model;
+    private final VehicleType type;
+    private final String plate;
+    private final String brand;
+    private final String model;
     private double dailyRentalPrice;
     private double currentKm;
-    private String vehicleClass;
+    private String vehicleClass; //final olmalı mı? olmamalı mı?
     private VehicleStatus status;
 
 
@@ -26,25 +26,19 @@ public abstract class Vehicle {
         this.status = VehicleStatus.AVAILABLE;
     }
 
-//set ve get methodları, kodun erişimine private değişkenlerin açılması için
+//set ve get methodları, kodun erişimine private değişkenlerin açılması ve değişiklikler, okumalar için
 
-    //(Araç tipi): Müşteri yaşı, araç türü için belirlenen minimum yaştan küçükse..." kuralı için tipi okumamızı sağlayacak.
+    //(Araç tipi): Aracın car mı motorcycle mı bunu öğrenmek için gerekiyor.
     public VehicleType getType() {
         return type;
     }
-    public void setType(VehicleType type) {
-        this.type = type;
-    }
 
-    //(Plaka): Benzersiz anahtarımız olduğu için dökümandaki "Plakaya ait araç var mı?" kontrolünde kullanılacak.
+    //(Plaka): Benzersiz anahtarımız olduğu için dökümandan almak için kullanılacak.
     public String getPlate() {
         return plate;
     }
-    public void setPlate(String plate) {
-        this.plate = plate;
-    }
 
-    //(brand ve model): Listeleme yaparken sadece ekrana bastırılmak için kullanılacaklar.
+    //(brand ve com.staj.rentacar.model): Listeleme yaparken sadece ekrana bastırılmak için kullanılacaklar.
     public String getBrand(){
         return brand;
     }
@@ -85,12 +79,14 @@ public abstract class Vehicle {
         this.status = status;
     }
 
-    /*Age ve prive metodları neden soyut?: Vehicle sınıfı tek başına bu soruya cevap veremez çünkü alt classlar için bu değişiyor.
-    Dolayısıyla sabit bir sayı yazılamadığından bu metodları abstract bırakıyoruz. Car sınıfı bunu return 21;, Motorcycle sınıfı ise return 18; diye override ederek dolduracak.*/
+    /*Age metodu neden soyut?: Vehicle sınıfı tek başına bu soruya cevap veremez çünkü alt classlar için bu değişiyor.
+    Dolayısıyla sabit bir sayı yazılamadığından bu metodu abstract bırakıyoruz. Car sınıfı bunu return 21;, Motorcycle sınıfı ise return 18; diye override ederek dolduracak.*/
 
     //Aracın kullanım yaş kısıtlaması için
     public abstract int getMinAgeLimit();
 
-    //Her aracın kiralama fiyatının hesaplanması için
-    public abstract double calculateRentalPrice(int days);
+    //Araacın kiralama fiyatının hesaplanması için (Vehicle içine toplandı hesaplama değişmiyor bu yüzden override edilmesine gerek yok)
+    public double calculateRentalPrice(int days){
+            return getDailyRentalPrice() * days;
+    }
 }
