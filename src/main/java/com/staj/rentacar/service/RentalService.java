@@ -1,4 +1,5 @@
 package com.staj.rentacar.service;
+import com.staj.rentacar.enums.VehicleStatus;
 import com.staj.rentacar.model.Vehicle;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,21 +16,20 @@ public class RentalService {
     private final List<Vehicle> parking = new ArrayList<>();
 
     //araç ekleme methodu
-    public void addVehicle(Vehicle newVehicle){
+    public boolean addVehicle(Vehicle newVehicle){
 
         //Otoparktaki mevcut araçları tek tek geziyoruz
         for(Vehicle existingVehicle : parking){
 
-            //Eğer var olan aracın plakası yeni gelen aracın plakasıyla aynıysa
-            if(existingVehicle.getPlate().equals(newVehicle.getPlate())){
-                System.out.println("[ERROR]: " + newVehicle.getPlate() + "brand already in the system");
-                return;
+            //Eğer var olan aracın plakası yeni gelen aracın plakasıyla aynıysa (hata)
+            if(existingVehicle.getPlate().equals(newVehicle.getPlate())) {
+                return false;
             }
         }
 
         // Java'da bir listenin içine eleman eklemek için .add() komutu kullanılıyor.
         parking.add(newVehicle);
-        System.out.println("Vehicle add to parking successfully, added plate: " + newVehicle.getPlate());
+        return true; //plaklar aynı değil araç eklenebilir
     }
 
     //araç bulma methodu (plakaya göre arama)
@@ -40,16 +40,37 @@ public class RentalService {
 
             //Elimizdeki mevcut aracın plakası, aranan plakaya eşit mi?
             if (existingVehicle.getPlate().equals(plate)) {
-                System.out.println("[INFO]: Searching vehicle is found");
                 return existingVehicle;
             }
         }
-
         return null; // eğer plaka bulunmadıysa null döner
     }
 
-    public void rentingVehicle(){
-        //içi doldurulacak 23.06 da
+    public RentalResult rentVehicle(String plate, int customerAge, int rentalDays){ // rentalResult 'u henüz yazamadım yazacağım 2.aşama tamamlanmış olacak
+        for(Vehicle existingVehicle : parking) {
+
+            //Araç kiradaysa zaten kiralanamaz
+            if (existingVehicle.getPlate().equals(plate)) {
+
+                if (existingVehicle.getStatus() == VehicleStatus.RENTED) {
+                    return null;
+                }
+
+                //Müsterinin yaşı kiralamaya uygun değilse kullanamaz
+                if (customerAge < existingVehicle.getMinAgeLimit()) {
+                    return null;
+                }
+
+                if (rentalDays <= 0) {
+                    return null;
+                }
+                existingVehicle.setStatus(VehicleStatus.RENTED);
+                double totalPrice = existingVehicle.calculateRentalPrice(rentalDays);
+                return new RentalResult(plate, rentalDays, totalPrice);
+
+            }
+        }
+            return null;
     }
 
 }
