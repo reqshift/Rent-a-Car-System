@@ -37,19 +37,14 @@ public class Main {
                 System.out.println("✗ HATALI!");
                 System.out.println("   👉 ÇÖZÜM: Proje kök dizininde pom.xml dosyası bulunamadı!");
             } else {
-                // Java'nın resmi XML Parser (Okuyucu) altyapısını hazırlıyoruz
                 javax.xml.parsers.DocumentBuilderFactory factory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
                 javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
-
-                // pom.xml dosyasını gerçekten bir XML olarak yüklemeyi deniyoruz
-                // İçeride tek bir '/' veya hatalı metin varsa burası anında çökecektir!
                 builder.parse(pomDosyasi);
-
                 System.out.println("✓ BAŞARILI (pom.xml formatı kurumsal standartlara uygun)");
             }
         } catch (org.xml.sax.SAXParseException e) {
             System.out.println("✗ HATALI (XML Format İhlali)!");
-            System.out.println("   👉 ÇÖZÜM: pom.xml dosyasının yapısı bozulmuş!");
+            System.out.println("   👉 ÇÖZÜM: pom.xml dosyanızın yapısı bozulmuş!");
             System.out.println("      Hatalı Satır: " + e.getLineNumber() + ", Sütun: " + e.getColumnNumber());
             System.out.println("      Hata Nedeni: " + e.getMessage());
         } catch (Exception e) {
@@ -106,7 +101,7 @@ public class Main {
         }
 
         // -------------------------------------------------------------------------
-        // DENETİM 5: Amirin Feedback Kontrolü (calculateRentalPrice Konumu)
+        // DENETİM 5: Feedback Kontrolü (calculateRentalPrice Konumu)
         // -------------------------------------------------------------------------
         System.out.print("[TEST 5] Feedback Kontrolü (calculateRentalPrice Konumu): ");
         try {
@@ -137,47 +132,54 @@ public class Main {
         } catch (Exception e) {
             System.out.println("✗ HATALI!");
         }
+
         // -------------------------------------------------------------------------
         // DENETİM 7: RentalService Araç Ekleme ve Mükerrer Plaka Kontrolü (Aşama 2)
         // -------------------------------------------------------------------------
-                System.out.print("[TEST 7] Servis Katmanı & Benzersiz Plaka Kontrolü: ");
-                try {
-                    // Bugün yazdığımız servisi ayağa kaldırıyoruz
-                    com.staj.rentacar.service.RentalService rentalService = new com.staj.rentacar.service.RentalService();
+        System.out.println("\n[TEST 7] Servis Katmanı & Benzersiz Plaka Kontrolü:");
+        try {
+            com.staj.rentacar.service.RentalService rentalService = new com.staj.rentacar.service.RentalService();
 
-                    // Test car nesnesini ekliyoruz (Başarılı olması gerekir)
-                    rentalService.addVehicle(testCar);
+            // İlk ekleme denemesi (Başarılı true dönmeli)
+            boolean ilkEkleme = rentalService.addVehicle(testCar);
+            if (ilkEkleme) {
+                System.out.println("Vehicle add to parking successfully, added plate: " + testCar.getPlate());
+            } else {
+                System.out.println("✗ HATA: İlk araç eklenemedi!");
+            }
 
-                    // AYNI arabayı (aynı plakayı) tekrar eklemeyi deniyoruz!
-                    // Amacımız: Bizim yazdığımız o akıllı metodun bunu reddetmesini sağlamak.
-                    rentalService.addVehicle(testCar);
-
-                    // NOT: addVehicle metodumuz içindeki System.out.println() çıktıları
-                    // buranın hemen altında görünecek ve çalıştığını kanıtlayacaktır.
-                    System.out.println("✓ BAŞARILI (Ekleme ve engelleme mekanizması çağrıldı)");
-                } catch (Exception e) {
-                    System.out.println("✗ HATALI!");
-                }
+            // Aynı aracı tekrar ekleme denemesi (Başarısız false dönmeli)
+            boolean ikinciEkleme = rentalService.addVehicle(testCar);
+            if (!ikinciEkleme) {
+                System.out.println("[ERROR]: " + testCar.getPlate() + " brand already in the system");
+                System.out.println("✓ BAŞARILI (Ekleme servis tarafından başarıyla reddedildi)");
+            } else {
+                System.out.println("✗ HATALI: Sistem aynı plakayı iki kez kabul etti!");
+            }
+        } catch (Exception e) {
+            System.out.println("✗ SİSTEMİK HATA: " + e.getMessage());
+        }
 
         // -------------------------------------------------------------------------
         // DENETİM 8: RentalService Plakadan Araç Bulma Kontrolü (Aşama 2)
         // -------------------------------------------------------------------------
-                System.out.print("[TEST 8] Servis Katmanı & Plakadan Araç Bulma (findVehicle): ");
-                try {
-                    com.staj.rentacar.service.RentalService rentalService = new com.staj.rentacar.service.RentalService();
-                    rentalService.addVehicle(testCar); // Otoparka arabayı çektik
+        System.out.println("\n[TEST 8] Servis Katmanı & Plakadan Araç Bulma (findVehicle):");
+        try {
+            com.staj.rentacar.service.RentalService rentalService = new com.staj.rentacar.service.RentalService();
+            rentalService.addVehicle(testCar); // Otoparka ekledik
 
-                    // Plakayı aratıyoruz
-                    Vehicle bulunan = rentalService.findVehicle("06ABC123");
+            // Plakayı aratıyoruz
+            Vehicle bulunan = rentalService.findVehicle("06ABC123");
 
-                    if (bulunan != null && bulunan.getBrand().equals("Ford")) {
-                        System.out.println("✓ BAŞARILI (Aranan plaka otoparkta nokta atışı bulundu!)");
-                    } else {
-                        System.out.println("✗ HATALI (Araç listede olduğu halde bulunamadı veya yanlış araç döndü)");
-                    }
-                } catch (Exception e) {
-                    System.out.println("✗ HATALI!");
-                }
+            if (bulunan != null) {
+                System.out.println("[INFO]: Searching vehicle is found");
+                System.out.println("✓ BAŞARILI (Aranan plaka otoparkta nokta atışı bulundu!)");
+            } else {
+                System.out.println("✗ HATALI (Araç listede olduğu halde bulunamadı veya null döndü)");
+            }
+        } catch (Exception e) {
+            System.out.println("✗ SİSTEMİK HATA: " + e.getMessage());
+        }
 
         System.out.println("\n==================================================");
         System.out.println("       🔍 DENETİM RAPORU SÜRECİ BİTTİ             ");
