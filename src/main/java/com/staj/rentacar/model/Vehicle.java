@@ -10,7 +10,7 @@ public abstract class Vehicle {
     private final String model;
     private double dailyRentalPrice;
     private double currentKm;
-    private String vehicleClass; //final olmalı mı? olmamalı mı?
+    private final String vehicleClass;
     private VehicleStatus status;
 
 
@@ -62,13 +62,9 @@ public abstract class Vehicle {
         this.currentKm = currentKm;
     }
 
-    //(Araç türü): SET methodu: JSON'dan veriyi ilk kez Java'ya yüklerken ve sisteme yeni araç eklerken o değişkenin içini doldurmak için şarttır.
-    //GET metodu: Filtreleme yaparken, arama yaparken ve ekrana aracın türünü yazdırmak/okumak için şarttır.
+    //(Araç türü): GET metodu: Filtreleme yaparken, arama yaparken ve ekrana aracın türünü yazdırmak/okumak için şarttır.
     public String getVehicleClass(){
         return vehicleClass;
-    }
-    public void setVehicleClass(String vehicleClass){
-        this.vehicleClass = vehicleClass;
     }
 
     //Kirada olan araç tekrar kiralanamaz" kuralını işletirken aracın durumunu kontrol etmek için kullanılır.
