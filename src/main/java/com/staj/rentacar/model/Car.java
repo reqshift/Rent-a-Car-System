@@ -5,8 +5,8 @@ import com.staj.rentacar.enums.VehicleType;
 public class Car extends Vehicle {
     private final String gearType;
 
-    public Car(VehicleType type, String plate, String brand, String model, double dailyRentalPrice, double currentKm, String vehicleClass, String gearType){ //car class'ı constructoru
-        super(type, plate, brand, model, dailyRentalPrice, currentKm, vehicleClass);
+    public Car(VehicleType type, String plate, String brand, String model, double dailyRentalPrice, double currentKm, String vehicleClass, String gearType, double extraKmPrice){ //car class'ı constructoru
+        super(type, plate, brand, model, dailyRentalPrice, currentKm, vehicleClass, extraKmPrice);
         this.gearType = gearType;
     }
 
