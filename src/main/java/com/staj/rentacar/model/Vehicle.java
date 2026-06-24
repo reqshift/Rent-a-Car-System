@@ -12,9 +12,10 @@ public abstract class Vehicle {
     private double currentKm;
     private final String vehicleClass;
     private VehicleStatus status;
+    private double extraKmPrice;
 
 
-    public Vehicle(VehicleType type, String plate, String brand, String model, double dailyRentalPrice, double currentKm, String vehicleClass){ //vehicle'ın constructoru
+    public Vehicle(VehicleType type, String plate, String brand, String model, double dailyRentalPrice, double currentKm, String vehicleClass, double extraKmPrice){ //vehicle'ın constructoru
         this.type = type;
         this.plate = plate;
         this.brand = brand;
@@ -24,6 +25,7 @@ public abstract class Vehicle {
         this.vehicleClass = vehicleClass;
         //ilk başta alınan tüm araçların kiralamaya uygun olduğunu belirtmek için status parametre olarak dışarıdan alınmadı, available'ye atandı.
         this.status = VehicleStatus.AVAILABLE;
+        this.extraKmPrice = extraKmPrice;
     }
 
 //set ve get methodları, kodun erişimine private değişkenlerin açılması ve değişiklikler, okumalar için
@@ -73,6 +75,10 @@ public abstract class Vehicle {
     }
     public void setStatus(VehicleStatus status) {
         this.status = status;
+    }
+
+    public double getExtraKmPrice() {
+        return extraKmPrice;
     }
 
     /*Age metodu neden soyut?: Vehicle sınıfı tek başına bu soruya cevap veremez çünkü alt classlar için bu değişiyor.

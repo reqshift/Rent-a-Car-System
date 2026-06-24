@@ -4,8 +4,8 @@ import com.staj.rentacar.enums.VehicleType;
 public class Motorcycle extends Vehicle {
     private final int engineCc;
 
-    public Motorcycle(VehicleType type, String plate, String brand, String model, double dailyRentalPrice, double currentKm, String vehicleClass, int engineCc) { //motorcycle constructoru
-        super(type, plate, brand, model, dailyRentalPrice, currentKm, vehicleClass);
+    public Motorcycle(VehicleType type, String plate, String brand, String model, double dailyRentalPrice, double currentKm, String vehicleClass, int engineCc, double extraKmPrice) { //motorcycle constructoru
+        super(type, plate, brand, model, dailyRentalPrice, currentKm, vehicleClass, extraKmPrice);
         this.engineCc = engineCc;
     }
 
