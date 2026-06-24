@@ -1,14 +1,15 @@
 [
   {
-    "type" : "CAR",
-    "plate" : "06EHB292",
-    "brand" : "Lada",
-    "model" : "Vega",
-    "dailyRentalPrice" : 400.0,
-    "currentKm" : 100000.0,
-    "vehicleClass" : "Sedan",
-    "gearType" : "manual",
-    "status" : "RENTED"
+    "type": "CAR",
+    "plate": "06EHB292",
+    "brand": "Lada",
+    "model": "Vega",
+    "dailyRentalPrice": 400.0,
+    "currentKm": 100000.0,
+    "vehicleClass": "Sedan",
+    "gearType": "manual",
+    "status": "RENTED",
+    "extraKmPrice": 5.0
   },
 
   {
@@ -20,7 +21,9 @@
     "currentKm" : 250000.0,
     "vehicleClass" : "Hatchback",
     "gearType" : "automatic",
-    "status" : "AVAILABLE"
+    "status" : "AVAILABLE",
+    "extraKmPrice": 10.0
+
 
   },
 
@@ -33,7 +36,9 @@
     "currentKm" : 40000.0,
     "vehicleClass" : "Sportbike",
     "engineCc" : 600,
-    "status" : "RENTED"
+    "status" : "RENTED",
+    "extraKmPrice": 3.0
+
 
   },
 
@@ -46,6 +51,8 @@
     "currentKm" : 12000.0,
     "vehicleClass" : "Scooter",
     "engineCc" : 125,
-    "status" : "AVAILABLE"
+    "status" : "AVAILABLE",
+    "extraKmPrice": 2.0
+
   }
 ]
