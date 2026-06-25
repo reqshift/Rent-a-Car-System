@@ -12,7 +12,7 @@ public abstract class Vehicle {
     private double currentKm;
     private final String vehicleClass;
     private VehicleStatus status;
-    private double extraKmPrice;
+    private final double extraKmPrice;
 
 
     public Vehicle(VehicleType type, String plate, String brand, String model, double dailyRentalPrice, double currentKm, String vehicleClass, double extraKmPrice){ //vehicle'ın constructoru
@@ -77,6 +77,7 @@ public abstract class Vehicle {
         this.status = status;
     }
 
+    //extra gidilen km stündeki aşım için km başına verilecek ücreti temsil eder.
     public double getExtraKmPrice() {
         return extraKmPrice;
     }
