@@ -1,6 +1,7 @@
 package com.staj.rentacar.service;
 import com.staj.rentacar.dto.RentalResult;
 import com.staj.rentacar.enums.VehicleStatus;
+import com.staj.rentacar.exception.*;
 import com.staj.rentacar.model.Vehicle;
 
 import java.util.ArrayList;
@@ -17,18 +18,22 @@ public class RentalService {
      'Vehicle' yazdık çünkü polymorphism sayesinde bu liste hem Car hem de Motorcycle nesnelerini ortaklaşa kabul edebilir. */
     private final List<Vehicle> parking = new ArrayList<>();
 
+    private static final double KM_LIMIT = 500.0; //double totalKmLimit = 500.0; den değiştirildi çünkü static o nesneden 1 tane oluşturulmasına izin veriyor, aynı main gibi
+
     //araç ekleme methodu
     public boolean addVehicle(Vehicle newVehicle) {
         // Araç veya plaka girilmediyse direkt reddedilecek
         if (newVehicle == null || newVehicle.getPlate() == null || newVehicle.getPlate().trim().isEmpty()) {
-            return false;
+            throw new InvalidPlateException("Vehicle and its plate must be exists and entered correctly (ex:06ABC123");
         }
 
-        // findVehicle null dönmüyorsa, bu araç parkingdedir, plaka vardır.
-        // newVheicle.getPlate() findVehicle içine parametre olarak gönderilerek var olan plaka ve yeni eklenecek aracın plaka eşitliğini kontrol eder.
-        if (findVehicle(newVehicle.getPlate()) != null) {
-            return false; // Kontrol sonucu plakalar eşitse false döner.
+        for(Vehicle existingVehicle : parking){
+            if(existingVehicle.getPlate().equalsIgnoreCase(newVehicle.getPlate())) {
+                return false;
+            }
         }
+        //findVehicle(newVehicle.getPlate()) != null silindi ve eski parkingde arama plaka eşitleme yönetmi addVehicleye yeniden ekledi, findVehicle kaldırıldı
+        //Bunun sebebi findVehicle' nin araç bulunamayınca exception atmasıdır, addVehiclede exception atılmamalı, asıl araç bulunmazsa plaka kontrolü yapılıp eklenmeli
 
         // Plakalar eşit değil, araç ve plaka null değil yani eklenecek yeni araç
         parking.add(newVehicle);
@@ -40,7 +45,8 @@ public class RentalService {
 
         //eğer aranan plaka yoksa döngüde aranmaz false döner, methoddan çıkılır
         if (plate == null || plate.trim().isEmpty()){
-            return null;
+            throw new InvalidPlateException("Plate must be entered correctly (ex: 06ABC123)"); // plaka değeri geçersiz girildiyse null yazılır, plaka bulunamadı exceptionu kullanılamaz,geçersiz değer exceptionu kullanılır
+
         }
 
         // Otoparktaki her bir aracı 'existingVehicle' adıyla tek tek geziyoruz
@@ -51,7 +57,8 @@ public class RentalService {
                 return existingVehicle;//bulunan plaka döndürülür
             }
         }
-        return null; // eğer parking tarandı ve plaka bulunmadıysa null döner
+    throw new VehicleDidntFindException("No vehicle found with the given plate."); //otopark taranıp araç bulunamazsa exception yazarız araç bulunmadı diye
+
     }
 
     public RentalResult rentVehicle(String plate, int customerAge, int rentalDays){
@@ -59,23 +66,20 @@ public class RentalService {
         //Aracı bulup foundVehicle değişkenine atadık
         Vehicle foundVehicle = findVehicle(plate);
 
-        //Aracın otoparka kayıtlı olup olmadığıı kontrol eder.
-        if (foundVehicle == null) {
-              return null;
-        }
+        //foundVehice==null 'u sildim çünkü findVehicle(plate); ataması yapılınca zaten plaka bulunamazsa VehicleDidntFindException çalışır ve null değer geçmemiş olur kiralamaya
 
         //Araç zaten kirada ise kiralanamaz
         if (foundVehicle.getStatus() == VehicleStatus.RENTED) {
-              return null;
+              throw new VehicleAlreadyRentedException("Vehicle already rented, you cannot rent");
         }
 
         //Müsterinin yaşı kiralamaya uygun değilse kiralayamaz
         if (customerAge < foundVehicle.getMinAgeLimit()) {
-             return null;
+              throw new InsufficientDrivingAgeException("Customer's age isn't enough to rent vehicle");
         }
 
         if (rentalDays <= 0) {
-             return null;
+             throw new InvalidRentalTimeException("Rental days must be larger than 0 for renting");
         }
 
         foundVehicle.setStatus(VehicleStatus.RENTED);
@@ -87,19 +91,16 @@ public class RentalService {
 
         //sonuç null ise, kiralama yapılamayacağı gibi araç teslim de alınamaz
         if(result == null){
-            return false;
+            throw new InvalidRentalResultException("Rental result is required to return a vehicle");//exception atılamaz çünkü bu araç bulunamadı hatası değildir, rentalResult sonucunda result null dönerse result yoktur.
         }
 
         Vehicle returningVehicle = findVehicle(result.getPlate());
 
-        //eğer otobark arandığında araba bulunamamışsa bu araba bizim değildir
-        if(returningVehicle == null){
-            return false;
-        }
+        ///returningVehicle==null silindi çükü findVehicle zatn eğer plate bulunamadıysa null durumunda exception atıyor
 
-        //araba zaten kiralanmış durumdaysa kiralanamaz
+        //arabakiralanmış durumda değilse geri alınamaz
         if(returningVehicle.getStatus() != VehicleStatus.RENTED){
-            return false;
+            throw new VehicleNotInRentException("Vehicle is not currently rented.");
         }
 
         //eğer aracın ilk km si son km sinden küçükse hata verir.
@@ -110,11 +111,9 @@ public class RentalService {
         //gidilen km, en son teslim edildiği km den ilk başta kiralandığı km'yi çıkararak bulunuyor
         double drivenKm = endKm - returningVehicle.getCurrentKm();
 
-        double totalKmLimit = 500.0;
-
         // gidilen km kiralanırken belirtilen limitten fazlaysa extra aşım hesaplanarak aşım ücretiyle çarpılıp fiyata eklenecek
-        if(drivenKm > totalKmLimit) {
-            double extraKm = drivenKm - totalKmLimit;
+        if(drivenKm > KM_LIMIT ) {
+            double extraKm = drivenKm - KM_LIMIT;
             double extraFee = extraKm * returningVehicle.getExtraKmPrice();
             result.addExtraKmFee(extraFee); // Method çağırılarak cezalı km başı tutarı faturaya yansıtılacak.
         }
