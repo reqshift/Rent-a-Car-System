@@ -8,30 +8,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RentalService {
-    //araç ekleme (Aynı plaka ile sadece bir araç eklenir)
-    // araç bulma (plakadan bulunabilir)
-    // araç kiralama (Araç kiradaysa zaten tekrar kiralanamamalı, müsteri yası belirtilenden küçükse de kiralanmaz)
-    // araç teslim alma methodları bulundurulacak (kiralama gün sayısı geçerli olacak)
-    // (Amaç mainin yükünü azaltmak)
 
     /* Dijital otoparkımızı oluşturduk 'parking' ile. Tüm arabaları ve motorları bu listenin içine atacağız.
      'Vehicle' yazdık çünkü polymorphism sayesinde bu liste hem Car hem de Motorcycle nesnelerini ortaklaşa kabul edebilir. */
     private final List<Vehicle> parking = new ArrayList<>();
 
-    private static final double KM_LIMIT = 500.0; //double totalKmLimit = 500.0; den değiştirildi çünkü static o nesneden 1 tane oluşturulmasına izin veriyor, aynı main gibi
+    private static final double KM_LIMIT = 500.0; //double totalKmLimit = 500.0; den değiştirildi çünkü static o nesneden 1 tane oluşturulmasına izin veriyor, aynı main methodunda kullanılan static gibi
 
     //araç ekleme methodu
     public boolean addVehicle(Vehicle newVehicle) {
-        // Araç veya plaka girilmediyse direkt reddedilecek
-        if (newVehicle == null || newVehicle.getPlate() == null || newVehicle.getPlate().trim().isEmpty()) {
-            throw new InvalidPlateException("Vehicle and its plate must be exists and entered correctly (ex:06ABC123");
+
+        if (newVehicle == null || newVehicle.getPlate() == null || newVehicle.getPlate().trim().isEmpty()) { // Araç veya plaka girilmediyse direkt reddedilecek
+            throw new InvalidPlateException("Vehicle and its plate must be provided (ex:06ABC123");
         }
 
         for(Vehicle existingVehicle : parking){
             if(existingVehicle.getPlate().equalsIgnoreCase(newVehicle.getPlate())) {
-                return false;
+               throw new DuplicatePlateException("A vehicle with this plate already exists.");
             }
         }
+
         //findVehicle(newVehicle.getPlate()) != null silindi ve eski parkingde arama plaka eşitleme yönetmi addVehicleye yeniden ekledi, findVehicle kaldırıldı
         //Bunun sebebi findVehicle' nin araç bulunamayınca exception atmasıdır, addVehiclede exception atılmamalı, asıl araç bulunmazsa plaka kontrolü yapılıp eklenmeli
 
@@ -57,7 +53,7 @@ public class RentalService {
                 return existingVehicle;//bulunan plaka döndürülür
             }
         }
-    throw new VehicleDidntFindException("No vehicle found with the given plate."); //otopark taranıp araç bulunamazsa exception yazarız araç bulunmadı diye
+    throw new VehicleNotFoundException("No vehicle found with the given plate."); //otopark taranıp araç bulunamazsa exception yazarız araç bulunmadı diye
 
     }
 
@@ -66,7 +62,7 @@ public class RentalService {
         //Aracı bulup foundVehicle değişkenine atadık
         Vehicle foundVehicle = findVehicle(plate);
 
-        //foundVehice==null 'u sildim çünkü findVehicle(plate); ataması yapılınca zaten plaka bulunamazsa VehicleDidntFindException çalışır ve null değer geçmemiş olur kiralamaya
+        //foundVehice==null 'u sildim çünkü findVehicle(plate); ataması yapılınca zaten plaka bulunamazsa VehicleNotFoundException çalışır ve null değer geçmemiş olur kiralamaya
 
         //Araç zaten kirada ise kiralanamaz
         if (foundVehicle.getStatus() == VehicleStatus.RENTED) {
@@ -105,7 +101,7 @@ public class RentalService {
 
         //eğer aracın ilk km si son km sinden küçükse hata verir.
         if(endKm < returningVehicle.getCurrentKm()){
-            return false;
+            throw new InvalidEndKilometerException("End kilometer cannot be less than current kilometer.");
         }
 
         //gidilen km, en son teslim edildiği km den ilk başta kiralandığı km'yi çıkararak bulunuyor
