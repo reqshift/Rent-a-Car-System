@@ -18,9 +18,9 @@ public class Main {
             rentalService.addVehicle(...);
             rentalService.addVehicle(...);
         }
-        catch (InvalidPlateException e) {
+        catch (RentalException e) {
             System.out.println(e.getMessage());
-        } ileride addVehşcle içind değer alınca ona da exceptionları ile birlikte try catch yazacağım */
+        } ileride scanner için addVehicle adına değer alınca ona da RentalEXception ile birlikte try catch yazacağım */
                 new Car(
                         VehicleType.CAR,
                         "06ABC123",
@@ -52,17 +52,9 @@ public class Main {
         RentalResult result = null;
         try {
             result = rentalService.rentVehicle("06ABC123", 25, 3);
-            System.out.println("Car rented correctfully.");
+            System.out.println("Vehicle rented successfully.");
             System.out.println("Total rental price: " + result.getBasePrice());
-        } catch (InvalidPlateException e) {
-            System.out.println(e.getMessage());
-        } catch (VehicleDidntFindException e) {
-            System.out.println(e.getMessage());
-        } catch (VehicleAlreadyRentedException e) {
-            System.out.println(e.getMessage());
-        } catch (InsufficientDrivingAgeException e) {
-            System.out.println(e.getMessage());
-        } catch (InvalidRentalTimeException e) {
+        } catch (RentalException e) {
             System.out.println(e.getMessage());
         }
 
@@ -73,21 +65,15 @@ public class Main {
                 boolean returned = rentalService.returnVehicle(result, 250700);
 
                 if (returned) {
-                    System.out.println("Araç teslim alındı.");
-                    System.out.println("Ek km ücreti: "
-                            + result.getExtraKmFee());
-                    System.out.println("Toplam ücret: "
-                            + result.getTotalLastPrice());
+                    System.out.println("Vehicle returned successfully.");
+                    System.out.println("Extra kilometer fee: " + result.getExtraKmFee());
+                    System.out.println("Total price: " + result.getTotalLastPrice());
                 }
-            } catch (InvalidRentalResultException e) {
-                System.out.println(e.getMessage());
-            } catch (InvalidPlateException e) {
-                System.out.println(e.getMessage());
-            } catch (VehicleDidntFindException e) {
-                System.out.println(e.getMessage());
-            } catch (VehicleNotInRentException e) {
+
+            } catch (RentalException e) {
                 System.out.println(e.getMessage());
             }
         }
+
     }
 }
