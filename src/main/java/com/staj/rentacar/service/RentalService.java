@@ -3,15 +3,19 @@ import com.staj.rentacar.dto.RentalResult;
 import com.staj.rentacar.enums.VehicleStatus;
 import com.staj.rentacar.exception.*;
 import com.staj.rentacar.model.Vehicle;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class RentalService {
 
+    private final List<Vehicle> parking;
+
     /* Dijital otoparkımızı oluşturduk 'parking' ile. Tüm arabaları ve motorları bu listenin içine atacağız.
      'Vehicle' yazdık çünkü polymorphism sayesinde bu liste hem Car hem de Motorcycle nesnelerini ortaklaşa kabul edebilir. */
-    private final List<Vehicle> parking = new ArrayList<>();
+
+    public RentalService(List<Vehicle> parking){ //mainden gelen vehiclesi almak için parkinge eşitleyen constructor
+        this.parking = parking;
+    }
 
     private static final double KM_LIMIT = 500.0; //double totalKmLimit = 500.0; den değiştirildi çünkü static o nesneden 1 tane oluşturulmasına izin veriyor, aynı main methodunda kullanılan static gibi
 
@@ -118,5 +122,10 @@ public class RentalService {
         returningVehicle.setStatus(VehicleStatus.AVAILABLE);
         return true;
     }
+
+    public List<Vehicle> getParking() { //güncel parking listesine erişmek için
+        return parking;
+    }
+
 }
 
