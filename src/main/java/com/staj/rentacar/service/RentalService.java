@@ -14,6 +14,9 @@ public class RentalService {
      'Vehicle' yazdık çünkü polymorphism sayesinde bu liste hem Car hem de Motorcycle nesnelerini ortaklaşa kabul edebilir. */
 
     public RentalService(List<Vehicle> parking){ //mainden gelen vehiclesi almak için parkinge eşitleyen constructor
+        if(parking == null){
+            throw new IllegalArgumentException("Parking must not be null.");
+        }
         this.parking = parking;
     }
 
