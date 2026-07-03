@@ -3,12 +3,14 @@ import com.staj.rentacar.dto.RentalResult;
 import com.staj.rentacar.enums.VehicleStatus;
 import com.staj.rentacar.exception.*;
 import com.staj.rentacar.model.Vehicle;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RentalService {
 
     private final List<Vehicle> parking;
+    private final Map<String, RentalResult> activeRentals = new HashMap<>(); //kiralanmış araçların faturalarını tutacak
 
     /* Dijital otoparkımızı oluşturduk 'parking' ile. Tüm arabaları ve motorları bu listenin içine atacağız.
      'Vehicle' yazdık çünkü polymorphism sayesinde bu liste hem Car hem de Motorcycle nesnelerini ortaklaşa kabul edebilir. */
@@ -87,7 +89,9 @@ public class RentalService {
 
         foundVehicle.setStatus(VehicleStatus.RENTED);
         double basePrice = foundVehicle.calculateRentalPrice((rentalDays)); //taban aşım olmadığı zamandaki ücretin hesaplanması için kullanıldı.
-        return new RentalResult(plate, rentalDays, basePrice);
+        RentalResult result = new RentalResult(plate, rentalDays, basePrice);
+        activeRentals.put(result.getPlate(), result);//rentalResult map' e eklendi
+        return result;
     }
 
     public boolean returnVehicle(RentalResult result, double endKm){
@@ -123,11 +127,15 @@ public class RentalService {
 
         returningVehicle.setCurrentKm(endKm);
         returningVehicle.setStatus(VehicleStatus.AVAILABLE);
+        activeRentals.remove(result.getPlate());
         return true;
     }
 
     public List<Vehicle> getParking() { //güncel parking listesine erişmek için
         return parking;
+    }
+    public RentalResult getRentalResult(String plate) { //rentalResult' a consoleManager' in returnVehicle methodundan ulaşmak için
+        return activeRentals.get(plate);
     }
 
 }
