@@ -46,5 +46,17 @@
     "vehicleClass": "Scooter",
     "status": "AVAILABLE",
     "extraKmPrice": 2.0
+  },
+  {
+    "gearType": "Manuel",
+    "type": "CAR",
+    "plate": "06BCD44",
+    "brand": "FORD",
+    "model": "FIESTA",
+    "dailyRentalPrice": 500.0,
+    "currentKm": 400000.0,
+    "vehicleClass": "Hatchback",
+    "status": "RENTED",
+    "extraKmPrice": 4.0
   }
 ]
