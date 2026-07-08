@@ -3,14 +3,12 @@ import com.staj.rentacar.dto.RentalResult;
 import com.staj.rentacar.enums.VehicleStatus;
 import com.staj.rentacar.exception.*;
 import com.staj.rentacar.model.Vehicle;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 public class RentalService {
 
     private final List<Vehicle> parking;
-    private final Map<String, RentalResult> activeRentals = new HashMap<>(); //kiralanmış araçların faturalarını tutacak
 
     /* Dijital otoparkımızı oluşturduk 'parking' ile. Tüm arabaları ve motorları bu listenin içine atacağız.
      'Vehicle' yazdık çünkü polymorphism sayesinde bu liste hem Car hem de Motorcycle nesnelerini ortaklaşa kabul edebilir. */
@@ -89,21 +87,15 @@ public class RentalService {
 
         foundVehicle.setStatus(VehicleStatus.RENTED);
         double basePrice = foundVehicle.calculateRentalPrice((rentalDays)); //taban aşım olmadığı zamandaki ücretin hesaplanması için kullanıldı.
-        RentalResult result = new RentalResult(plate, rentalDays, basePrice);
-        activeRentals.put(result.getPlate(), result);//rentalResult map' e eklendi
-        return result;
+        RentalResult rentalResult= new RentalResult(plate, rentalDays, basePrice);
+        return rentalResult;
     }
 
-    public boolean returnVehicle(RentalResult result, double endKm){
+    public RentalResult returnVehicle(String plate, int rentalDays, double endKm){
 
-        //sonuç null ise, kiralama yapılamayacağı gibi araç teslim de alınamaz
-        if(result == null){
-            throw new InvalidRentalResultException("Rental result is required to return a vehicle");//exception atılamaz çünkü bu araç bulunamadı hatası değildir, rentalResult sonucunda result null dönerse result yoktur.
-        }
+        Vehicle returningVehicle = findVehicle(plate);
 
-        Vehicle returningVehicle = findVehicle(result.getPlate());
-
-        ///returningVehicle==null silindi çükü findVehicle zatn eğer plate bulunamadıysa null durumunda exception atıyor
+        //returningVehicle==null silindi çükü findVehicle zatn eğer plate bulunamadıysa null durumunda exception atıyor
 
         //arabakiralanmış durumda değilse geri alınamaz
         if(returningVehicle.getStatus() != VehicleStatus.RENTED){
@@ -117,25 +109,28 @@ public class RentalService {
 
         //gidilen km, en son teslim edildiği km den ilk başta kiralandığı km'yi çıkararak bulunuyor
         double drivenKm = endKm - returningVehicle.getCurrentKm();
+        double extraFee = 0;
 
         // gidilen km kiralanırken belirtilen limitten fazlaysa extra aşım hesaplanarak aşım ücretiyle çarpılıp fiyata eklenecek
         if(drivenKm > KM_LIMIT ) {
             double extraKm = drivenKm - KM_LIMIT;
-            double extraFee = extraKm * returningVehicle.getExtraKmPrice();
-            result.addExtraKmFee(extraFee); // Method çağırılarak cezalı km başı tutarı faturaya yansıtılacak.
+            extraFee = extraKm * returningVehicle.getExtraKmPrice();
         }
+
+        double basePrice = returningVehicle.calculateRentalPrice(rentalDays); //taban aşım olmadığı zamandaki ücretin hesaplanması için kullanıldı.
+
+        RentalResult rentalResult = new RentalResult(plate, rentalDays, basePrice);
+        rentalResult.addExtraKmFee(extraFee);
 
         returningVehicle.setCurrentKm(endKm);
         returningVehicle.setStatus(VehicleStatus.AVAILABLE);
-        activeRentals.remove(result.getPlate());
-        return true;
+
+        return rentalResult;
+
     }
 
     public List<Vehicle> getParking() { //güncel parking listesine erişmek için
         return parking;
-    }
-    public RentalResult getRentalResult(String plate) { //rentalResult' a consoleManager' in returnVehicle methodundan ulaşmak için
-        return activeRentals.get(plate);
     }
 
 }

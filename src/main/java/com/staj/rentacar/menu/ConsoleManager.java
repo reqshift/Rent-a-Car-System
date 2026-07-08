@@ -241,10 +241,11 @@ public class ConsoleManager {
         try {
             System.out.println("Enter plate: ");
             String plate = scanner.next();
-            RentalResult rentalResult = rentalService.getRentalResult(plate);
+            System.out.println("Enter rental days: ");
+            int rentalDays = scanner.nextInt();
             System.out.println("Enter delivered end km: ");
             double endKm = scanner.nextDouble();
-            rentalService.returnVehicle(rentalResult, endKm);
+           RentalResult rentalResult = rentalService.returnVehicle(plate, rentalDays, endKm);
 
             System.out.println("========== RETURN SUCCESS ==========");
             System.out.println("----------------------------------------\n");
