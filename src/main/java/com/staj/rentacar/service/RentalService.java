@@ -86,12 +86,13 @@ public class RentalService {
         }
 
         foundVehicle.setStatus(VehicleStatus.RENTED);
-        double basePrice = foundVehicle.calculateRentalPrice((rentalDays)); //taban aşım olmadığı zamandaki ücretin hesaplanması için kullanıldı.
-        RentalResult rentalResult= new RentalResult(plate, rentalDays, basePrice);
+        foundVehicle.setCurrentRentalDays(rentalDays);//olmazsa gün sayısı 0 da kalır.
+        double basePrice = foundVehicle.calculateRentalPrice(rentalDays); //taban aşım olmadığı zamandaki ücretin hesaplanması için kullanıldı.
+        RentalResult rentalResult = new RentalResult(plate, rentalDays, basePrice);
         return rentalResult;
     }
 
-    public RentalResult returnVehicle(String plate, int rentalDays, double endKm){
+    public RentalResult returnVehicle(String plate, double endKm){
 
         Vehicle returningVehicle = findVehicle(plate);
 
@@ -117,13 +118,18 @@ public class RentalService {
             extraFee = extraKm * returningVehicle.getExtraKmPrice();
         }
 
-        double basePrice = returningVehicle.calculateRentalPrice(rentalDays); //taban aşım olmadığı zamandaki ücretin hesaplanması için kullanıldı.
+        int rentalDays = returningVehicle.getCurrentRentalDays();//rentaldays vehicldeki get methodundan çekiliyor.
+
+        double basePrice = returningVehicle.calculateRentalPrice(rentalDays);//taban fiyat,aşım olmadığı zamandaki ücretin hesaplanması için kullanıldı.
 
         RentalResult rentalResult = new RentalResult(plate, rentalDays, basePrice);
+
         rentalResult.addExtraKmFee(extraFee);
 
+        // İşlem bittikten sonra aracı güncelle
         returningVehicle.setCurrentKm(endKm);
         returningVehicle.setStatus(VehicleStatus.AVAILABLE);
+        returningVehicle.setCurrentRentalDays(0);
 
         return rentalResult;
 
