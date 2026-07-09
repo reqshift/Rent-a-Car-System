@@ -9,7 +9,8 @@
     "currentKm": 100000.0,
     "vehicleClass": "Sedan",
     "status": "RENTED",
-    "extraKmPrice": 5.0
+    "extraKmPrice": 5.0,
+    "currentRentalDays": 5
   },
   {
     "gearType": "automatic",
@@ -21,7 +22,8 @@
     "currentKm": 250700.0,
     "vehicleClass": "Hatchback",
     "status": "AVAILABLE",
-    "extraKmPrice": 10.0
+    "extraKmPrice": 10.0,
+    "currentRentalDays": 0
   },
   {
     "engineCc": 600,
@@ -33,7 +35,8 @@
     "currentKm": 40000.0,
     "vehicleClass": "Sportbike",
     "status": "RENTED",
-    "extraKmPrice": 3.0
+    "extraKmPrice": 3.0,
+    "currentRentalDays": 2
   },
   {
     "engineCc": 125,
@@ -45,7 +48,8 @@
     "currentKm": 12000.0,
     "vehicleClass": "Scooter",
     "status": "AVAILABLE",
-    "extraKmPrice": 2.0
+    "extraKmPrice": 2.0,
+    "currentRentalDays": 0
   },
   {
     "gearType": "Manuel",
@@ -57,6 +61,7 @@
     "currentKm": 400000.0,
     "vehicleClass": "Hatchback",
     "status": "RENTED",
-    "extraKmPrice": 4.0
+    "extraKmPrice": 4.0,
+    "currentRentalDays": 10
   }
 ]
