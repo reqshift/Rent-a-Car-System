@@ -43,6 +43,7 @@ public class JsonDataManager {
                double currentKm = object.get("currentKm").getAsDouble();
                String vehicleClass = object.get("vehicleClass").getAsString();
                double extraKmPrice = object.get("extraKmPrice").getAsDouble();
+               int currentRentalDays = object.get("currentRentalDays").getAsInt();
 
                if (type == VehicleType.CAR) {
                    String gearType = object.get("gearType").getAsString();
@@ -56,7 +57,8 @@ public class JsonDataManager {
                            currentKm,
                            vehicleClass,
                            gearType,
-                           extraKmPrice
+                           extraKmPrice,
+                           currentRentalDays
                    );
 
                } else if (type == VehicleType.MOTORCYCLE) {
@@ -72,7 +74,8 @@ public class JsonDataManager {
                            currentKm,
                            vehicleClass,
                            engineCc,
-                           extraKmPrice
+                           extraKmPrice,
+                           currentRentalDays
 
                    );
 

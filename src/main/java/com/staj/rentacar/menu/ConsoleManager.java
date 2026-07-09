@@ -99,6 +99,7 @@ public class ConsoleManager {
             System.out.println("Current Km      : " + vehicle.getCurrentKm());
             System.out.println("Status          : " + vehicle.getStatus());
             System.out.println("Extra Km Price  : " + vehicle.getExtraKmPrice());
+            System.out.println("Rental days     : " + vehicle.getCurrentRentalDays());
 
             if(vehicle instanceof Car){ // bu araç gerçekten car mı?
                 Car car = (Car) vehicle; //Vehicle referansını Car referansına çeviriyoruz "downcasting"
@@ -149,6 +150,7 @@ public class ConsoleManager {
         System.out.println("Enter extra kilometer price: ");
         double extraKmPrice = scanner.nextDouble();
 
+
         String gearType = "";
         int engineCc = 0;
 
@@ -174,7 +176,8 @@ public class ConsoleManager {
                     currentKm,
                     vehicleClass,
                     gearType,
-                    extraKmPrice
+                    extraKmPrice,
+                    0
             );
 
 
@@ -191,7 +194,8 @@ public class ConsoleManager {
                     currentKm,
                     vehicleClass,
                     engineCc,
-                    extraKmPrice
+                    extraKmPrice,
+                    0
 
             );
 
@@ -241,11 +245,9 @@ public class ConsoleManager {
         try {
             System.out.println("Enter plate: ");
             String plate = scanner.next();
-            System.out.println("Enter rental days: ");
-            int rentalDays = scanner.nextInt();
             System.out.println("Enter delivered end km: ");
             double endKm = scanner.nextDouble();
-           RentalResult rentalResult = rentalService.returnVehicle(plate, rentalDays, endKm);
+           RentalResult rentalResult = rentalService.returnVehicle(plate, endKm);
 
             System.out.println("========== RETURN SUCCESS ==========");
             System.out.println("----------------------------------------\n");
